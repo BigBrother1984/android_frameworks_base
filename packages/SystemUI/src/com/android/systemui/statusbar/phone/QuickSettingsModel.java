@@ -792,12 +792,12 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
             mRSSIState.signalContentDescription = enabled && (mobileSignalIconId > 0)
                     ? signalContentDescription
                     : r.getString(R.string.accessibility_no_signal);
-            mRSSIState.dataTypeIconId = enabled && (dataTypeIconId > 0) && !mWifiState.enabled
+            mRSSIState.dataTypeIconId = enabled && (dataTypeIconId > 0) && !mWifiState.connected
                     ? dataTypeIconId
                     : 0;
             mRSSIState.activityIn = enabled && activityIn;
             mRSSIState.activityOut = enabled && activityOut;
-            mRSSIState.dataContentDescription = enabled && (dataTypeIconId > 0) && !mWifiState.enabled
+            mRSSIState.dataContentDescription = enabled && (dataTypeIconId > 0) && !mWifiState.connected
                     ? dataContentDescription
                     : r.getString(R.string.accessibility_no_data);
             mRSSIState.label = enabled
