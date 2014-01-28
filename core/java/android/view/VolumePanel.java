@@ -158,7 +158,7 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
                 R.string.volume_alarm,
                 R.drawable.ic_audio_alarm,
                 R.drawable.ic_audio_alarm_mute,
-                true),
+                false),
         MediaStream(AudioManager.STREAM_MUSIC,
                 R.string.volume_icon_description_media,
                 R.drawable.ic_audio_vol,
@@ -649,7 +649,7 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
 
         if ((flags & AudioManager.FLAG_SHOW_UI) != 0) {
             synchronized (this) {
-                if (streamType != mActiveStreamType) {
+                if (mActiveStreamType != streamType) {
                     if (mCurrentOverlayStyle == VOLUME_OVERLAY_EXPANDABLE) {
                         hideSlider(mActiveStreamType);
                     }
