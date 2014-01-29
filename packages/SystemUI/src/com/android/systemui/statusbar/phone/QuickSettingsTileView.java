@@ -60,7 +60,8 @@ class QuickSettingsTileView extends FrameLayout {
 
     private boolean mTemporary;
     private boolean mEditMode;
-    private boolean mVisible;
+    private boolean mVisible; // Checks ordinary tiles visibility
+    private boolean mTempVisibility; // Checks temporary tiles visibility
 
     public QuickSettingsTileView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -132,12 +133,18 @@ class QuickSettingsTileView extends FrameLayout {
     void setEditMode(boolean enabled) {
         mEditMode = enabled;
         mVisible = getVisibility() == View.VISIBLE
-                && (getScaleY() >= ENABLED || getScaleX() >= ENABLED);
-        if(!isTemporary() && enabled) {
-            setVisibility(View.VISIBLE);
+                && (getScaleY() >= ENABLED || getScaleX() >= ENABLED)
+                && !isTemporary();
+        mTempVisibility = getVisibility() == View.VISIBLE
+                && (getScaleY() == DEFAULT || getScaleX() == DEFAULT);
+        boolean temporaryEditMode = isTemporary() && enabled;
+        if(isTemporary() && enabled && mTempVisibility) {
+            handleTemporaryViewAnimation(temporaryEditMode);
+            handleTemporaryViewVisibility(temporaryEditMode);
+        } else if(!isTemporary() && enabled) {
+            handleOrdinaryViewVisibility(true);
             setHoverEffect(HOVER_COLOR_BLACK, !mVisible);
-            float scale = mVisible ? ENABLED : DISABLED;
-            animate().scaleX(scale).scaleY(scale).setListener(null);
+            handleOrdinaryViewAnimation(mVisible);
             setEditModeClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -145,20 +152,36 @@ class QuickSettingsTileView extends FrameLayout {
                 }
             });
             setEditModeLongClickListener(null);
-        } else {
-            boolean temporaryEditMode = isTemporary() && enabled;
-            setOnClickListener(temporaryEditMode ? null : mOnClickListener);
-            setOnLongClickListener(temporaryEditMode ? null : mOnLongClickListener);
-            float scale = temporaryEditMode ? DISAPPEAR : DEFAULT;
-            animate().scaleX(scale).scaleY(scale).setListener(null);
-            if(!mVisible && !isTemporary()) { // Item has been disabled
-                setVisibility(View.GONE);
-            }
+        } else if (!isTemporary() && !enabled) {
+            handleOrdinaryViewVisibility(mVisible);
+        } else if (isTemporary() && !enabled) {
+            handleTemporaryViewVisibility(temporaryEditMode);
+            handleTemporaryViewAnimation(temporaryEditMode);
         }
     }
 
     boolean isEditModeEnabled() {
         return mEditMode;
+    }
+
+    // Temporary tiles
+    void handleTemporaryViewVisibility(boolean temp) {
+        setVisibility(temp ? View.GONE : View.VISIBLE);
+    }
+
+    void handleTemporaryViewAnimation(boolean temp) {
+        float scale = temp ? DISAPPEAR : DEFAULT;
+        animate().scaleX(scale).scaleY(scale).setListener(null);
+    }
+
+    // Ordinary tiles
+    void handleOrdinaryViewVisibility(boolean visibility) {
+        setVisibility(!visibility ? View.GONE : View.VISIBLE);
+    }
+
+    void handleOrdinaryViewAnimation(boolean visibility) {
+        float scale = visibility ? ENABLED : DISABLED;
+        animate().scaleX(scale).scaleY(scale).setListener(null);
     }
 
     void toggleVisibility() {
@@ -187,9 +210,7 @@ class QuickSettingsTileView extends FrameLayout {
 
     @Override
     public void setOnClickListener(OnClickListener listener) {
-        if (!isEditModeEnabled()) {
-            mOnClickListener = listener;
-        }
+        mOnClickListener = listener;
         super.setOnClickListener(listener);
     }
 
@@ -199,9 +220,7 @@ class QuickSettingsTileView extends FrameLayout {
 
     @Override
     public void setOnLongClickListener(OnLongClickListener listener) {
-        if (!isEditModeEnabled()) {
-            mOnLongClickListener = listener;
-        }
+        mOnLongClickListener = listener;
         super.setOnLongClickListener(listener);
     }
 
