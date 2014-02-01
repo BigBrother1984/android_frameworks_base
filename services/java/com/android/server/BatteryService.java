@@ -719,7 +719,7 @@ public final class BatteryService extends Binder {
                     com.android.internal.R.integer.config_notificationsBatteryFullARGB);
 
             // Does the Device support changing battery LED colors?
-            mLightEnabled = mContext.getResources().getBoolean(
+            mLightEnabled = context.getResources().getBoolean(
                     com.android.internal.R.bool.config_intrusiveBatteryLed);
 
             mBatteryLedOn = context.getResources().getInteger(
@@ -808,11 +808,11 @@ public final class BatteryService extends Binder {
 
             // Battery light enabled
             mLightEnabled = Settings.System.getInt(resolver,
-                    Settings.System.BATTERY_LIGHT_ENABLED, mLightEnabled ? 1 : 0) != 0;
+                    Settings.System.BATTERY_LIGHT_ENABLED, 1) != 0;
 
             // Low battery pulse
             mLedPulseEnabled = Settings.System.getInt(resolver,
-                        Settings.System.BATTERY_LIGHT_PULSE, mLightEnabled ? 1 : 0) != 0;
+                        Settings.System.BATTERY_LIGHT_PULSE, 1) != 0;
 
             // Light colors
             mBatteryLowARGB = Settings.System.getInt(resolver,
