@@ -33,6 +33,9 @@
   <!--Notification led-->
   <java-symbol type="array" name="notification_light_package_mapping" />
 
+  <!--Battery led-->
+  <java-symbol type="bool" name="config_intrusiveBatteryLed" />
+
   <!--Setting confirmation dialog-->
   <java-symbol type="id" name="setting_confirmation_dialog_visual_hint" />
   <java-symbol type="layout" name="setting_confirmation_dialog" />
